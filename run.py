@@ -1,11 +1,20 @@
 import requests
 from requests.auth import HTTPBasicAuth
+import json
 
-baseUrl = "https://familyzone.atlassian.net/rest/api/3/"
-projectId = "10042"
+configFile = "1.cfg"
+f = open(configFile)
+config = json.load(f)
+
+baseUrl = config["baseUrl"]
+projectId = config["projectId"]
+email = config["email"]
+apiToken = config["apiToken"]
+versionName = config["versionName"]
+
 
 def jiraRequest(url, method="GET"):
-   auth = HTTPBasicAuth("dominik.jarco@familyzone.com", "a3juApmssokW1EJUhidy4596")
+   auth = HTTPBasicAuth(email, apiToken)
    headers = { "Accept": "application/json" }
    return requests.request(
       method,
@@ -23,7 +32,6 @@ def getVersionId(versionName):
    return jiraRequest(url).json()["values"][0]["id"]
 
 
-versionName = "schoolmanager-next"
 print("Getting version id for {0}...".format(versionName))
 versionId = getVersionId(versionName)
 print("{0} has version id {1}".format(versionName, versionId))
